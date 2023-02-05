@@ -1,26 +1,35 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import MainLayout from "./layouts/MainLayout";
-import People from "./features/People/People";
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  useNavigate,
+} from "react-router-dom";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      {
-        path: "/",
-        element: <h1>Chat</h1>,
-      },
-      {
-        path: "active",
-        element: <People />,
-      },
-    ],
-  },
-]);
+import { useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "./app/hooks";
+import { fetchUser, resetError } from "./features/User/slice/userSlice";
+import Loading from "./pages/Loading";
 
 function App() {
-  return <RouterProvider router={router} />;
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { data: user, loading, error } = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    const promise = dispatch(fetchUser());
+    return () => promise.abort();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      navigate("/login");
+      dispatch(resetError);
+    }
+  }, [error]);
+
+  
+
+  return loading ? <Loading /> : <Outlet />;
 }
 
 export default App;

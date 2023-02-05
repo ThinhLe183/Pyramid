@@ -1,49 +1,79 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsFillChatFill } from "react-icons/bs";
 import { FaUserFriends } from "react-icons/fa";
-import { TbTextWrapDisabled, TbTextWrap } from "react-icons/tb";
-import { NavLink } from "react-router-dom";
-import Avatar from "../Avatar/Avatar";
-import NavbarBtn from "./NavbarBtn";
+import {
+  TbTextWrapDisabled,
+  TbTextWrap,
+  TbLogout,
+  TbLogin,
+} from "react-icons/tb";
+import { NavbarBtn } from "./NavbarBtn";
+import Avatar from "../Avatar";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { setUser } from "../../features/User/slice/userSlice";
 
 export default function Navbar() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [isExtend, setIsExtend] = useState(false);
+  const { conversationId } = useParams();
+
+  const activeConversationPath = conversationId ? `d/${conversationId} ` : "";
   return (
     <aside
-      className={`flex flex-col justify-between p-2 ${
-        isExtend && "basis-2/12"
-      }`}
+      className={`flex flex-col justify-between p-2  ${isExtend && "w-3/12"}`}
     >
       <nav className="flex flex-col ">
         <NavbarBtn
-          to="/"
+          to={`/${activeConversationPath}`}
           icon={<BsFillChatFill />}
           name={"Chats"}
           isExtend={isExtend}
         />
+
         <NavbarBtn
-          to="active"
+          to={`active/${activeConversationPath}`}
           icon={<FaUserFriends />}
           name={"People"}
           isExtend={isExtend}
         />
       </nav>
       <div
-        className={`flex justify-between ${
+        className={`flex items-center justify-between gap-2 ${
           isExtend ? "flex-row" : " flex-col"
         }`}
       >
-        <button
-          className={`btn btn-ghost normal-case gap-2 ${
-            !isExtend && "btn-circle"
-          }`}
-        >
-          <Avatar />
-          {isExtend && "Messi"}
-        </button>
+        <div className="dropdown dropdown-right dropdown-end">
+          <button
+            className={`btn btn-sm  ${
+              isExtend ? "btn-ghost normal-case gap-2 h-12" : "btn-circle"
+            }`}
+          >
+            <Avatar extraClass="w-8" />
+            {isExtend && "Messi"}
+          </button>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu p-2 shadow shadow-black bg-base-100 rounded-box w-72 text-white"
+          >
+            <li>
+              <button
+                onClick={() => {
+                  dispatch(setUser(null));
+                  navigate("/login");
+                  localStorage.clear();
+                }}
+              >
+                <TbLogout />
+                <p>Log out</p>
+              </button>
+            </li>
+          </ul>
+        </div>
         <button
           onClick={() => setIsExtend(!isExtend)}
-          className="btn btn-ghost btn-circle text-xl"
+          className="btn btn-sm btn-ghost btn-circle text-lg"
         >
           {isExtend ? <TbTextWrap /> : <TbTextWrapDisabled />}
         </button>
