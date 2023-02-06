@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BsFillChatFill } from "react-icons/bs";
 import { FaUserFriends } from "react-icons/fa";
-import {
-  TbTextWrapDisabled,
-  TbTextWrap,
-  TbLogout,
-  TbLogin,
-} from "react-icons/tb";
+import { TbTextWrapDisabled, TbTextWrap, TbLogout } from "react-icons/tb";
 import { NavbarBtn } from "./NavbarBtn";
 import Avatar from "../Avatar";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -14,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { setUser } from "../../features/User/slice/userSlice";
 
 export default function Navbar() {
+  const user = useAppSelector((state) => state.user.data);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isExtend, setIsExtend] = useState(false);
@@ -22,7 +18,7 @@ export default function Navbar() {
   const activeConversationPath = conversationId ? `d/${conversationId} ` : "";
   return (
     <aside
-      className={`flex flex-col justify-between p-2  ${isExtend && "w-3/12"}`}
+      className={`flex flex-col justify-between p-2  ${isExtend && "w-1/6"}`}
     >
       <nav className="flex flex-col ">
         <NavbarBtn
@@ -50,8 +46,8 @@ export default function Navbar() {
               isExtend ? "btn-ghost normal-case gap-2 h-12" : "btn-circle"
             }`}
           >
-            <Avatar extraClass="w-8" />
-            {isExtend && "Messi"}
+            <Avatar extraClass="w-8" src={user?.avatar} />
+            {isExtend && user?.name}
           </button>
           <ul
             tabIndex={0}

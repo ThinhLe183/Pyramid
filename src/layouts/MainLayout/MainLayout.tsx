@@ -7,11 +7,13 @@ export default function MainLayout() {
   return (
     <div className="flex divide-x-2 divide-gray-600 divide-opacity-20 h-screen">
       <Navbar />
-      <div className="min-w-max w-4/12 ">
-        <Outlet />
-      </div>
-      <div className="h-full w-full min-w-max">
-        <ChatLayout />
+      <div className="grow flex h-full divide-x-2 divide-gray-600 divide-opacity-20">
+        <div className="h-full w-[23rem] ">
+          <Outlet />
+        </div>
+        <div className="grow">
+          <ChatLayout />
+        </div>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import TopSearchConversation from "../features/Conversation/components/TopSearch
 
 export default function Conversation() {
   return (
-    <div className="flex flex-col py-2 h-full divide-y-2  divide-gray-600 divide-opacity-20">
+    <div className="flex flex-col h-full divide-y-2  divide-gray-600 divide-opacity-20">
       <TopSearchConversation />
       <ListConversations />
       <BottomCopyright />

@@ -12,7 +12,7 @@ import { fetchUser, login } from "../features/User/slice/userSlice";
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { data: user, loading, error } = useAppSelector((state) => state.user);
+  const  user = useAppSelector((state) => state.user.data);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
