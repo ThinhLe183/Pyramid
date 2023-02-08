@@ -1,5 +1,5 @@
-import { FormEventHandler, useEffect, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   AiOutlineEyeInvisible,
@@ -8,31 +8,31 @@ import {
 } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import logo from "../assets/logo/Pyramid-black.png";
-import { fetchUser, login, setUser } from "../features/User/slice/userSlice";
-import Loading from "./Loading";
+import { fetchUser, login } from "../features/User/slice/userSlice";
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const {
-    data: user,
-    isAuthenticating,
-    loading,
-  } = useAppSelector((state) => state.user);
+  const { data: user, isAuthenticating } = useAppSelector(
+    (state) => state.user
+  );
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  // Check if user has already authenticated
   useEffect(() => {
     if (!user && isAuthenticating) {
       const promise = dispatch(fetchUser());
       return () => promise.abort();
     }
   }, []);
+  // When authenticate process is done and user fetch successfully navigate to main page
   useEffect(() => {
     if (!isAuthenticating && user) {
       navigate("/");
     }
   }, [isAuthenticating]);
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     dispatch(login({ username, password })).then(() => {
@@ -40,9 +40,7 @@ export default function Login() {
     });
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <div className="min-h-screen flex justify-center items-center ">
       <form
         onSubmit={handleSubmit}

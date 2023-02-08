@@ -1,4 +1,4 @@
-import { Navigate, Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Navbar from "../../components/NavBar";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useEffect } from "react";
@@ -14,14 +14,15 @@ export default function MainLayout() {
   } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  // Check if user has already authenticated
   useEffect(() => {
-    
     if (!user && isAuthenticating) {
       const promise = dispatch(fetchUser());
       return () => promise.abort();
     }
   }, []);
 
+  // When authenticate process done and user fetched failed we navigate to login page
   useEffect(() => {
     if (!isAuthenticating && !user) {
       navigate("login");

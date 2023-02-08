@@ -40,7 +40,6 @@ export const fetchMessages = createAsyncThunk(
   "conversation/getMessages",
   async (id: string, thunkAPI) => {
     try {
-      console.log(id);
       const response = await axiosClient.get<Message[]>(
         `conversations/${id}/messages`,
         { signal: thunkAPI.signal }
