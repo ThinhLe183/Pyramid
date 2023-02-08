@@ -1,20 +1,16 @@
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/NavBar";
-import ChatLayout from "../ChatLayOut";
+import { useAppSelector } from "../../app/hooks";
+import { useEffect } from "react";
 
 //Layout of protected routes
 export default function MainLayout() {
+  //If fetch user failed
+
   return (
-    <div className="flex divide-x-2 divide-gray-600 divide-opacity-20 h-screen">
+    <div className="flex divide-x-2 divide-gray-600 divide-opacity-20 h-screen ">
       <Navbar />
-      <div className="grow flex h-full divide-x-2 divide-gray-600 divide-opacity-20">
-        <div className="h-full w-[23rem] ">
-          <Outlet />
-        </div>
-        <div className="grow">
-          <ChatLayout />
-        </div>
-      </div>
+      <Outlet />
     </div>
   );
 }

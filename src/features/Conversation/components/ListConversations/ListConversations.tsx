@@ -1,9 +1,11 @@
-import React from "react";
 import ConversationCard from "../ConversationCard";
-import { useAppSelector } from "../../../../app/hooks";
-
-export default function ListConversations() {
-  const conversations = useAppSelector((state) => state.conversation.list);
+import { Conversation } from "../../../../types/Conversation";
+interface ListConversationProps {
+  conversations: Conversation[];
+}
+export default function ListConversations({
+  conversations,
+}: ListConversationProps) {
   return (
     <div className="grow flex flex-col gap-1 overflow-y-scroll px-1 ">
       {conversations.map((conversation) => (

@@ -3,14 +3,13 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { store } from "./app/store";
 import { Provider } from "react-redux";
-
 import App from "./App";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import MainLayout from "./layouts/MainLayout";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Chat from "./pages/Chat";
 import Conversation from "./pages/Conversation";
 import Login from "./pages/Login";
 import People from "./pages/People";
-
+import MainLayout from "./layouts/MainLayout";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -23,12 +22,12 @@ const router = createBrowserRouter([
           {
             path: "/",
             element: <Conversation />,
-            children: [{ path: "d/:conversationId" }],
+            children: [{ path: "d/:id", element: <Chat /> }],
           },
           {
             path: "active",
             element: <People />,
-            children: [{ path: "d/:conversationId" }],
+            children: [{ path: "d/:id" }],
           },
         ],
       },

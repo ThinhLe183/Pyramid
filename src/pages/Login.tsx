@@ -8,26 +8,30 @@ import {
 } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import logo from "../assets/logo/Pyramid-black.png";
-import { fetchUser, login } from "../features/User/slice/userSlice";
+import { fetchUser, login, setUser } from "../features/User/slice/userSlice";
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const  user = useAppSelector((state) => state.user.data);
+  const user = useAppSelector((state) => state.user.data);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [dispatch]);
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    dispatch(login({ username, password }));
+    dispatch(login({ username, password }))
+      .unwrap()
+      .then((res) => {
+        const { user, access_token, refresh_token } = res;
+        localStorage.setItem("access_token", access_token);
+        localStorage.setItem("refresh_token", refresh_token);
+        dispatch(setUser(user));
+        navigate("/");
+      });
   };
 
-  return (
+  return user ? (
+    <Navigate to={"/"}></Navigate>
+  ) : (
     <div className="min-h-screen flex justify-center items-center ">
       <form
         onSubmit={handleSubmit}

@@ -3,7 +3,7 @@ import { Participant } from "./Participant";
 
 export interface Conversation {
   id: string;
-  type: "DM";
+  type: "DM" | "GROUP_DM";
   name?: string | undefined;
   icon?: string | undefined;
   owner_id?: string | undefined;

@@ -32,6 +32,7 @@ export const login = createAsyncThunk(
     const response = await axiosClient.post("auth/login", body, {
       signal: thunkAPI.signal,
     });
+    console.log(response.data);
     return response.data;
   }
 );
@@ -60,44 +61,27 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.fulfilled, (state, action) => {
-        const { user, access_token, refresh_token } = action.payload;
-        localStorage.setItem("access_token", access_token);
-        localStorage.setItem("refresh_token", refresh_token);
-        state.data = user;
-      })
       .addCase(fetchUser.fulfilled, (state, action) => {
-        const user = action.payload;
-        state.data = user;
+        const { requestId } = action.meta;
+        state.data = action.payload;
+
+        if (state.loading && state.currentRequestId === requestId) {
+          state.loading = false;
+          state.currentRequestId = undefined;
+        }
       })
-      .addMatcher(
-        (action): action is PendingAction => action.type.endsWith("/pending"),
-        (state, action) => {
-          state.loading = true;
-          state.currentRequestId = action.meta.requestId;
+      .addCase(fetchUser.pending, (state, action) => {
+        state.loading = true;
+        state.currentRequestId = action.meta.requestId;
+      })
+      .addCase(fetchUser.rejected, (state, action) => {
+        const { requestId } = action.meta;
+
+        if (state.loading && state.currentRequestId === requestId) {
+          state.loading = false;
+          state.currentRequestId = undefined;
         }
-      )
-      .addMatcher<FulfilledAction>(
-        (action) => action.type.endsWith("/fulfilled"),
-        (state, action) => {
-          const { requestId } = action.meta;
-          if (state.loading && state.currentRequestId === requestId) {
-            state.loading = false;
-            state.currentRequestId = undefined;
-          }
-        }
-      )
-      .addMatcher<RejectedAction>(
-        (action) => action.type.endsWith("/rejected"),
-        (state, action) => {
-          const { requestId } = action.meta;
-          if (state.loading && state.currentRequestId === requestId) {
-            state.loading = false;
-            state.error = action.error;
-            state.currentRequestId = undefined;
-          }
-        }
-      );
+      });
   },
 });
 

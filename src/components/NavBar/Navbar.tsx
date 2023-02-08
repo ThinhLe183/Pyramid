@@ -22,7 +22,7 @@ export default function Navbar() {
     >
       <nav className="flex flex-col ">
         <NavbarBtn
-          to={`/${activeConversationPath}`}
+          to={`${activeConversationPath}`}
           icon={<BsFillChatFill />}
           name={"Chats"}
           isExtend={isExtend}

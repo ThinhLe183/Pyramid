@@ -1,9 +1,13 @@
-import React from "react";
 import Avatar from "../../../../components/Avatar";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { Conversation } from "../../../../types/Conversation";
 import { formatTime } from "../../../../utils/formatDate";
+import excludeMe from "../../../../utils/excludeMe";
+import {
+  fetchMessages,
+  setSelectedConversation,
+} from "../../slice/conversationSlice";
 
 interface ConversationCardProps {
   conversation: Conversation;
@@ -12,10 +16,20 @@ export default function ConversationCard({
   conversation,
 }: ConversationCardProps) {
   const me = useAppSelector((state) => state.user.data);
-  const otherName = conversation.participants
-    .filter((participant) => participant.id !== me?.id)
-    .map((participant) => participant.nickname || participant.name)
-    .join(", ");
+  // const selectedConversation = useAppSelector(
+  //   (state) => state.conversation.selectedConversation
+  // );
+  const dispatch = useAppDispatch();
+  const conversationName =
+    conversation.name ||
+    excludeMe(conversation.participants, me?.id)
+      .map((participant) => participant.nickname || participant.name)
+      .join(", ");
+  const sender =
+    conversation.participants.find(
+      (participant) => participant.id === conversation.last_message?.author.id
+    )?.nickname || conversation.last_message?.author.name;
+
   return (
     <NavLink
       to={`d/${conversation.id}`}
@@ -28,19 +42,23 @@ export default function ConversationCard({
       }
     >
       <Avatar />
-      <div className="flex flex-col justify-between gap-1 w-9/12 ">
+      <div className="flex flex-col justify-between gap-1 w-8/12 relative ">
         <div className="font-semibold text-white text-sm truncate">
-          {conversation.name || otherName}
+          {conversationName}
         </div>
-        <div className="text-xs h-5 text-gray-300 truncate">
+        <div className="text-xs h-5 text-gray-300 truncate ">
+          {conversation.last_message?.author.id === me?.id && "you: "}
+          {conversation.type === "GROUP_DM" &&
+            conversation.last_message?.author.id !== me?.id &&
+            sender + ": "}
           {conversation.last_message?.msg}
         </div>
+        <span className="text-xs absolute -right-8 bottom-1">
+          {conversation.last_message?.ts
+            ? formatTime(conversation.last_message?.ts)
+            : ""}
+        </span>
       </div>
-      <span className="text-xs absolute right-2 bottom-5">
-        {conversation.last_message?.ts
-          ? formatTime(conversation.last_message?.ts)
-          : ""}
-      </span>
     </NavLink>
   );
 }
