@@ -1,28 +1,38 @@
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import {
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 
-import { useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "./app/hooks";
-import { fetchUser, resetError } from "./features/User/slice/userSlice";
-import Loading from "./pages/Loading";
-import { fetchConversations } from "./features/Conversation/slice/conversationSlice";
+import MainLayout from "./layouts/MainLayout";
+import Chat from "./pages/Chat";
+import Conversation from "./pages/Conversation";
+import Login from "./pages/Login";
+import People from "./pages/People";
 
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainLayout />,
+    children: [
+      {
+        path: "/",
+        element: <Conversation />,
+        children: [{ path: "d/:id", element: <Chat /> }],
+      },
+      {
+        path: "active",
+        element: <People />,
+        children: [{ path: "d/:id" }],
+      },
+    ],
+  },
+  {
+    path: "login",
+    element: <Login />,
+  },
+]);
 function App() {
-  const { loading, error } = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  useEffect(() => {
-    const promise = dispatch(fetchUser());
-    return () => promise.abort();
-  }, []);
-  useEffect(() => {
-    if (error) {
-      dispatch(resetError);
-      navigate("login");
-    }
-  }, [error]);
-  
-
-  return loading ? <Loading /> : <Outlet />;
+  return <RouterProvider router={router} />;
 }
 
 export default App;

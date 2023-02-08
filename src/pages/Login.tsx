@@ -9,28 +9,39 @@ import {
 import { FaUser } from "react-icons/fa";
 import logo from "../assets/logo/Pyramid-black.png";
 import { fetchUser, login, setUser } from "../features/User/slice/userSlice";
+import Loading from "./Loading";
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const user = useAppSelector((state) => state.user.data);
+  const {
+    data: user,
+    isAuthenticating,
+    loading,
+  } = useAppSelector((state) => state.user);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  useEffect(() => {
+    if (!user && isAuthenticating) {
+      const promise = dispatch(fetchUser());
+      return () => promise.abort();
+    }
+  }, []);
+  useEffect(() => {
+    if (!isAuthenticating && user) {
+      navigate("/");
+    }
+  }, [isAuthenticating]);
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    dispatch(login({ username, password }))
-      .unwrap()
-      .then((res) => {
-        const { user, access_token, refresh_token } = res;
-        localStorage.setItem("access_token", access_token);
-        localStorage.setItem("refresh_token", refresh_token);
-        dispatch(setUser(user));
-        navigate("/");
-      });
+    dispatch(login({ username, password })).then(() => {
+      navigate("/");
+    });
   };
 
-  return user ? (
-    <Navigate to={"/"}></Navigate>
+  return loading ? (
+    <Loading />
   ) : (
     <div className="min-h-screen flex justify-center items-center ">
       <form

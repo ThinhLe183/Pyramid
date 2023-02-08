@@ -1,9 +1,4 @@
-import {
-  AsyncThunk,
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Conversation } from "../../../types/Conversation";
 import axiosClient from "../../../services/axiosClient";
 import { Message } from "../../../types/Message";
@@ -31,6 +26,7 @@ export const fetchConversations = createAsyncThunk(
   "conversation/getList",
   async (_, thunkAPI) => {
     try {
+      console.log("good good");
       const response = await axiosClient.get<Conversation[]>("conversations", {
         signal: thunkAPI.signal,
       });

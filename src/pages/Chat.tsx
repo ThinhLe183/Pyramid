@@ -4,19 +4,16 @@ import ChatInput from "../features/Chat/components/ChatInput";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { setSelectedConversation } from "../features/Conversation/slice/conversationSlice";
+import {
+  fetchMessages,
+  setSelectedConversation,
+} from "../features/Conversation/slice/conversationSlice";
 
 export default function Chat() {
   const { id } = useParams();
   const { selectedConversation, messages } = useAppSelector(
     (state) => state.conversation
   );
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (id) {
-      dispatch(setSelectedConversation(id));
-    }
-  }, [id]);
 
   return selectedConversation ? (
     <div className="grow flex flex-col justify-between h-full">

@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { BsFillChatFill } from "react-icons/bs";
 import { FaUserFriends } from "react-icons/fa";
 import { TbTextWrapDisabled, TbTextWrap, TbLogout } from "react-icons/tb";
-import { NavbarBtn } from "./NavbarBtn";
 import Avatar from "../Avatar";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setUser } from "../../features/User/slice/userSlice";
+import { logout } from "../../features/User/slice/userSlice";
 
 export default function Navbar() {
   const user = useAppSelector((state) => state.user.data);
@@ -56,9 +55,8 @@ export default function Navbar() {
             <li>
               <button
                 onClick={() => {
-                  dispatch(setUser(null));
-                  navigate("/login");
-                  localStorage.clear();
+                  dispatch(logout());
+                  navigate("login");
                 }}
               >
                 <TbLogout />
@@ -75,5 +73,31 @@ export default function Navbar() {
         </button>
       </div>
     </aside>
+  );
+}
+interface NavbarProps {
+  isExtend: boolean;
+  name: string;
+  icon: JSX.Element;
+  to: string;
+}
+function NavbarBtn({ isExtend, name, icon, to }: NavbarProps) {
+  return (
+    <div className={`${!isExtend && "tooltip tooltip-right"} `} data-tip={name}>
+      <NavLink
+        to={to}
+        className={({ isActive }) => {
+          return `btn btn-sm btn-ghost capitalize gap-4 h-10  ${
+            isExtend ? "justify-start btn-block " : "btn-square w-10"
+          } ${isActive && "btn-active text-white"}`;
+        }}
+      >
+        <div className="indicator">
+          <div className="text-lg">{icon}</div>
+          {/* <span className="badge badge-xs badge-primary indicator-item"></span> */}
+        </div>
+        {isExtend ? name : ""}
+      </NavLink>
+    </div>
   );
 }

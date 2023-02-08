@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { refreshAccessToken } from "./authService";
 import { useAppDispatch } from "../app/hooks";
-import { setUser } from "../features/User/slice/userSlice";
+import { logout } from "../features/User/slice/userSlice";
 const axiosClient = axios.create({
   baseURL: "http://localhost:8080/api/v1/",
   timeout: 10 * 1000,
@@ -11,8 +11,7 @@ const axiosClient = axios.create({
 
 const handleRefreshTokenExpire = () => {
   const dispatch = useAppDispatch();
-  dispatch(setUser(null));
-  localStorage.clear();
+  dispatch(logout());
 };
 
 axiosClient.interceptors.response.use(
