@@ -4,10 +4,6 @@ import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { Conversation } from "../../../../types/Conversation";
 import { formatTime } from "../../../../utils/formatDate";
 import excludeMe from "../../../../utils/excludeMe";
-import {
-  fetchMessages,
-  setSelectedConversation,
-} from "../../slice/conversationSlice";
 
 interface ConversationCardProps {
   conversation: Conversation;
@@ -16,10 +12,6 @@ export default function ConversationCard({
   conversation,
 }: ConversationCardProps) {
   const me = useAppSelector((state) => state.user.data);
-  // const selectedConversation = useAppSelector(
-  //   (state) => state.conversation.selectedConversation
-  // );
-  const dispatch = useAppDispatch();
   const conversationName =
     conversation.name ||
     excludeMe(conversation.participants, me?.id)
@@ -33,6 +25,7 @@ export default function ConversationCard({
   return (
     <NavLink
       to={`d/${conversation.id}`}
+      end
       className={({ isActive }) =>
         `h-18 p-3 rounded-lg flex gap-4 items-center relative ${
           isActive

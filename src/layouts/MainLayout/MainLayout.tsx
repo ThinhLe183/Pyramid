@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { useEffect } from "react";
 import { fetchUser } from "../../features/User/slice/userSlice";
 import Loading from "../../pages/Loading";
+import { fetchConversations } from "../../features/Conversation/slice/conversationSlice";
 
 //Layout of protected routes
 export default function MainLayout() {
@@ -15,12 +16,21 @@ export default function MainLayout() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   // Check if user has already authenticated
+  // Consider migrate to RTK Query
   useEffect(() => {
     if (!user && isAuthenticating) {
       const promise = dispatch(fetchUser());
       return () => promise.abort();
     }
   }, []);
+
+  // Consider migrate to RTK Query
+  useEffect(() => {
+    if (user) {
+      const promise = dispatch(fetchConversations());
+      return () => promise.abort();
+    }
+  }, [user]);
 
   // When authenticate process done and user fetched failed we navigate to login page
   useEffect(() => {
@@ -34,7 +44,9 @@ export default function MainLayout() {
   ) : (
     <div className="flex divide-x-2 divide-gray-600 divide-opacity-20 h-screen ">
       <Navbar />
-      <Outlet />
+      <div className="flex divide-x-2 divide-gray-600 divide-opacity-20 grow">
+        <Outlet />
+      </div>
     </div>
   );
 }

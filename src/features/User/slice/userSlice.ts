@@ -41,7 +41,6 @@ export const fetchUser = createAsyncThunk("user/get", async (_, thunkAPI) => {
     const response = await axiosClient.get<User>("users/me", {
       signal: thunkAPI.signal,
     });
-    thunkAPI.dispatch(fetchConversations());
     return response.data;
   } catch (error) {
     throw error;

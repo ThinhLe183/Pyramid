@@ -1,23 +1,21 @@
-export const formatTime = (timestamp: Date): string => {
-  const now = new Date();
-  const diff = now.getTime() - new Date(timestamp).getTime();
+import { DAY, HOUR, MINUTE, WEEK, YEAR } from "./constant";
 
-  if (diff < 60000) {
-    // 60 seconds * 1000 milliseconds
+export const formatTime = (ts: Date): string => {
+  const now = new Date();
+  const diff = now.getTime() - new Date(ts).getTime();
+
+  if (diff < MINUTE) {
     return "·now";
-  } else if (diff < 3600000) {
-    // 60 minutes * 60 seconds * 1000 milliseconds
-    return `·${Math.floor(diff / 60000)}m`;
-  } else if (diff < 86400000) {
-    // 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
-    return `·${Math.floor(diff / 3600000)}h`;
-  } else if (diff < 604800000) {
-    // 7 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
-    return `·${Math.floor(diff / 86400000)}d`;
-  } else if (diff < 31536000000) {
-    // 365 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
-    return `·${Math.floor(diff / 604800000)}w`;
+  } else if (diff < HOUR) {
+    return `·${Math.floor(diff / MINUTE)}m`;
+  } else if (diff < DAY) {
+    return `·${Math.floor(diff / HOUR)}h`;
+  } else if (diff < WEEK) {
+    return `·${Math.floor(diff / DAY)}d`;
+  } else if (diff < YEAR) {
+    return `·${Math.floor(diff / WEEK)}w`;
   } else {
-    return `·${Math.floor(diff / 31536000000)}y`;
+    //more than a year
+    return `·${Math.floor(diff / YEAR)}y`;
   }
 };

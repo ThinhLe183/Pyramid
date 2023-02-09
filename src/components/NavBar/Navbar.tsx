@@ -13,23 +13,21 @@ export default function Navbar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isExtend, setIsExtend] = useState(false);
-  const { conversationId } = useParams();
-
-  const activeConversationPath = conversationId ? `d/${conversationId} ` : "";
+  const { id } = useParams();
   return (
     <aside
       className={`flex flex-col justify-between p-2  ${isExtend && "w-1/6"}`}
     >
       <nav className="flex flex-col ">
         <NavbarBtn
-          to={`${activeConversationPath}`}
+          to={id ? `d/${id}` : ""}
           icon={<BsFillChatFill />}
           name={"Chats"}
           isExtend={isExtend}
         />
 
         <NavbarBtn
-          to={`active/${activeConversationPath}`}
+          to={id ? `active/d/${id}` : "active"}
           icon={<FaUserFriends />}
           name={"People"}
           isExtend={isExtend}

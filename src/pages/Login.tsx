@@ -36,8 +36,8 @@ export default function Login() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    dispatch(login({ username, password })).then(() => {
-      dispatch(fetchConversations());
+    dispatch(login({ username, password })).finally(() => {
+      // dispatch(fetchConversations());
       navigate("/");
     });
   };

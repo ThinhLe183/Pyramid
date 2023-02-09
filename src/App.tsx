@@ -1,7 +1,4 @@
-import {
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
 import Chat from "./pages/Chat";
@@ -17,12 +14,22 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Conversation />,
-        children: [{ path: "d/:id", element: <Chat /> }],
+        children: [
+          { path: "d/:id", element: <Chat /> },
+          {
+            index: true,
+            element: (
+              <div className="grow flex h-full justify-center items-center text-2xl font-semibold">
+                Select a chat or start a new conversation
+              </div>
+            ),
+          },
+        ],
       },
       {
         path: "active",
         element: <People />,
-        children: [{ path: "d/:id" }],
+        children: [{ path: "d/:id", element: <Chat /> }],
       },
     ],
   },
