@@ -1,3 +1,6 @@
+import { useAppDispatch } from "../app/hooks";
+import { resetState } from "../features/Conversation/slice/conversationSlice";
+import { logout } from "../features/User/slice/userSlice";
 import axiosClient from "./axiosClient";
 
 export const refreshAccessToken = async () => {
@@ -8,3 +11,4 @@ export const refreshAccessToken = async () => {
   localStorage.setItem("refresh_token", response.data.refresh_token);
   return response.data;
 };
+

@@ -4,8 +4,6 @@ import axiosClient from "../../../services/axiosClient";
 import { Message } from "../../../types/Message";
 
 interface ConversationState {
-  selectedConversation: Conversation | null;
-  messages: Message[];
   list: Conversation[];
   isConversationLoading: boolean;
   isMessagesLoading: boolean;
@@ -13,9 +11,6 @@ interface ConversationState {
 }
 
 const initialState: ConversationState = {
-  selectedConversation: null,
-  messages: [],
-  ////
   list: [],
   isConversationLoading: false,
   isMessagesLoading: false,
@@ -45,7 +40,7 @@ export const fetchMessages = createAsyncThunk(
         { signal: thunkAPI.signal }
       );
       console.log(response.data);
-      return response.data;
+      return { messages: response.data, conversationId: id };
     } catch (error) {
       throw error;
     }
@@ -56,16 +51,7 @@ const conversationSlice = createSlice({
   name: "conversation",
   initialState,
   reducers: {
-    setSelectedConversation: (state, action: PayloadAction<string>) => {
-      const conversation = state.list.find(
-        (conversation) => conversation.id === action.payload
-      );
-      if (conversation) {
-        state.selectedConversation = conversation;
-      } else {
-        state.selectedConversation = null;
-      }
-    },
+    resetState: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -80,7 +66,6 @@ const conversationSlice = createSlice({
           state.currentRequestId = undefined;
         }
       })
-
       .addCase(fetchConversations.pending, (state, action) => {
         state.isConversationLoading = true;
         state.currentRequestId = action.meta.requestId;
@@ -96,13 +81,16 @@ const conversationSlice = createSlice({
         }
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
-        state.messages = action.payload;
+        const { messages, conversationId } = action.payload;
+        const selectedConversation = state.list.find(
+          (c) => c.id === conversationId
+        );
+        if (selectedConversation) selectedConversation.messages = messages;
       })
       .addCase(fetchMessages.pending, (state, action) => {
         state.isMessagesLoading = true;
         state.currentRequestId = action.meta.requestId;
       })
-
       .addCase(fetchMessages.rejected, (state, action) => {
         const { requestId } = action.meta;
         if (state.isMessagesLoading && state.currentRequestId === requestId) {
@@ -113,7 +101,7 @@ const conversationSlice = createSlice({
   },
 });
 
-export const { setSelectedConversation } = conversationSlice.actions;
+export const { resetState } = conversationSlice.actions;
 
 const conversationReducer = conversationSlice.reducer;
 

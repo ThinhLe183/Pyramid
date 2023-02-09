@@ -9,6 +9,7 @@ export interface Conversation {
   owner_id?: string | undefined;
   participants: Participant[];
   last_message?: Message;
+  messages: Message[] | undefined ;
   total_messages_sent: number;
   created_at: Date;
   updated_at: Date;

@@ -6,6 +6,7 @@ import Avatar from "../Avatar";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logout } from "../../features/User/slice/userSlice";
+import { resetState } from "../../features/Conversation/slice/conversationSlice";
 
 export default function Navbar() {
   const user = useAppSelector((state) => state.user.data);
@@ -55,6 +56,7 @@ export default function Navbar() {
             <li>
               <button
                 onClick={() => {
+                  dispatch(resetState());
                   dispatch(logout());
                   navigate("login");
                 }}

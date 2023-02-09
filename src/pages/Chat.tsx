@@ -2,26 +2,28 @@ import ChatHeader from "../features/Chat/components/ChatHeader";
 import ChatArea from "../features/Chat/components/ChatArea";
 import ChatInput from "../features/Chat/components/ChatInput";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { useCallback, useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { fetchMessages } from "../features/Conversation/slice/conversationSlice";
+import { Conversation } from "../types/Conversation";
+import { useParams } from "react-router-dom";
 
 export default function Chat() {
-  const { selectedConversation: conversation, messages } = useAppSelector(
-    (state) => state.conversation
-  );
+  const { id } = useParams();
+  const { list: conversations } = useAppSelector((state) => state.conversation);
   const dispatch = useAppDispatch();
+  const selectedConversation = conversations.find((conv) => conv.id === id);
+
   useEffect(() => {
-    if (conversation && conversation.id) {
-      const promise = dispatch(fetchMessages(conversation.id));
+    if (selectedConversation && selectedConversation.messages == undefined) {
+      const promise = dispatch(fetchMessages(selectedConversation.id));
       return () => promise.abort();
     }
-  }, [conversation]);
+  }, [id, dispatch, conversations]);
   return (
-    conversation && (
+    selectedConversation && (
       <div className="grow flex flex-col justify-between h-full">
-        <div>Conversation: {conversation.id}</div>
-        <ChatHeader conversation={conversation} />
-        <ChatArea messages={messages} conversation={conversation}/>
+        <ChatHeader conversation={selectedConversation} />
+        <ChatArea conversation={selectedConversation} />
         <ChatInput />
       </div>
     )
