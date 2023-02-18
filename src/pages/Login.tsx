@@ -9,7 +9,6 @@ import {
 import { FaUser } from "react-icons/fa";
 import logo from "../assets/logo/Pyramid-black.png";
 import { fetchUser, login } from "../features/User/slice/userSlice";
-import { fetchConversations } from "../features/Conversation/slice/conversationSlice";
 export default function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -37,7 +36,6 @@ export default function Login() {
   const handleSubmit = (e: any) => {
     e.preventDefault();
     dispatch(login({ username, password })).finally(() => {
-      // dispatch(fetchConversations());
       navigate("/");
     });
   };

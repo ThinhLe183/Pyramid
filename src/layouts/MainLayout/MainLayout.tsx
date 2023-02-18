@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { fetchUser } from "../../features/User/slice/userSlice";
 import Loading from "../../pages/Loading";
 import { fetchConversations } from "../../features/Conversation/slice/conversationSlice";
+import axiosClient from "../../services/axiosClient";
 
 //Layout of protected routes
 export default function MainLayout() {
@@ -24,6 +25,13 @@ export default function MainLayout() {
     }
   }, []);
 
+  // When authenticate process done and user fetched failed we navigate to login page
+  useEffect(() => {
+    if (!isAuthenticating && !user) {
+      navigate("login");
+    }
+  }, [isAuthenticating]);
+
   // Consider migrate to RTK Query
   useEffect(() => {
     if (user) {
@@ -31,13 +39,6 @@ export default function MainLayout() {
       return () => promise.abort();
     }
   }, [user]);
-
-  // When authenticate process done and user fetched failed we navigate to login page
-  useEffect(() => {
-    if (!isAuthenticating && !user) {
-      navigate("login");
-    }
-  }, [isAuthenticating]);
 
   return loading ? (
     <Loading />

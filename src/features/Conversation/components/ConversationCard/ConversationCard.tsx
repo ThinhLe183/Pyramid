@@ -19,8 +19,8 @@ export default function ConversationCard({
       .join(", ");
   const sender =
     conversation.participants.find(
-      (participant) => participant.id === conversation.last_message?.author.id
-    )?.nickname || conversation.last_message?.author.name;
+      (participant) => participant.id === conversation.last_message?.author_id
+    )?.nickname || conversation.last_message?.author_name;
 
   return (
     <NavLink
@@ -40,9 +40,10 @@ export default function ConversationCard({
           {conversationName}
         </div>
         <div className="text-xs h-5 text-gray-300 truncate ">
-          {conversation.last_message?.author.id === me?.id && "you: "}
+          {conversation.last_message?.author_id === me?.id && "you: "}
           {conversation.type === "GROUP_DM" &&
-            conversation.last_message?.author.id !== me?.id &&
+            conversation.last_message?.author_id !== me?.id &&
+            sender &&
             sender + ": "}
           {conversation.last_message?.msg}
         </div>

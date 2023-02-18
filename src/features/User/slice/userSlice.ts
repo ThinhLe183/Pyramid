@@ -66,8 +66,10 @@ const userSlice = createSlice({
         const { user, access_token, refresh_token } = action.payload;
         state.data = user;
         state.currentRequestId = undefined;
+        console.log(action.payload);
         localStorage.setItem("access_token", access_token);
         localStorage.setItem("refresh_token", refresh_token);
+        axiosClient.defaults.headers.Authorization = `Bearer ${access_token}`;
       })
       .addCase(fetchUser.fulfilled, (state, action) => {
         const { requestId } = action.meta;

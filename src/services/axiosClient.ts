@@ -1,8 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { refreshAccessToken } from "./authService";
-import { useAppDispatch } from "../app/hooks";
-import { logout } from "../features/User/slice/userSlice";
-import { resetState } from "../features/Conversation/slice/conversationSlice";
+
 const axiosClient = axios.create({
   baseURL: "http://localhost:8080/api/v1/",
   timeout: 10 * 1000,
@@ -11,7 +9,7 @@ const axiosClient = axios.create({
 });
 
 const handleRefreshTokenExpire = () => {
-  localStorage.clear()
+  localStorage.clear();
 };
 
 axiosClient.interceptors.response.use(
@@ -40,7 +38,7 @@ axiosClient.interceptors.response.use(
     }
     //Refresh token failed
     if (status === 401) {
-      handleRefreshTokenExpire()
+      handleRefreshTokenExpire();
     }
     return Promise.reject(error);
   }

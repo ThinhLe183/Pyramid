@@ -21,7 +21,6 @@ export const fetchConversations = createAsyncThunk(
   "conversation/getList",
   async (_, thunkAPI) => {
     try {
-      console.log("good good");
       const response = await axiosClient.get<Conversation[]>("conversations", {
         signal: thunkAPI.signal,
       });
@@ -33,14 +32,28 @@ export const fetchConversations = createAsyncThunk(
 );
 export const fetchMessages = createAsyncThunk(
   "conversation/getMessages",
-  async (id: string, thunkAPI) => {
+  async (conversationId: string, thunkAPI) => {
     try {
       const response = await axiosClient.get<Message[]>(
-        `conversations/${id}/messages`,
+        `conversations/${conversationId}/messages`,
         { signal: thunkAPI.signal }
       );
-      console.log(response.data);
-      return { messages: response.data, conversationId: id };
+      return { messages: response.data, conversationId };
+    } catch (error) {
+      throw error;
+    }
+  }
+);
+
+export const sendMessage = createAsyncThunk(
+  "messages/postMessage",
+  async ({ conversationId, msg }: { conversationId: string; msg: string }) => {
+    try {
+      const response = await axiosClient.post<Message>(
+        `conversations/${conversationId}/messages`,
+        { type: "DEFAULT", msg }
+      );
+      return response.data;
     } catch (error) {
       throw error;
     }
@@ -96,6 +109,26 @@ const conversationSlice = createSlice({
         if (state.isMessagesLoading && state.currentRequestId === requestId) {
           state.isMessagesLoading = false;
           state.currentRequestId = undefined;
+        }
+      })
+      .addCase(sendMessage.fulfilled, (state, action) => {
+        const message = action.payload;
+
+        const index = state.list.findIndex(
+          (conversation) => conversation.id === message.conversation_id
+        );
+
+        if (index !== -1) {
+          state.list[index].messages?.push(message);
+          state.list[index].last_message = {
+            type: message.type,
+            attachments: message.attachments,
+            author_id: message.author.id,
+            author_name: message.author.name,
+            mentions: message.mentions,
+            msg: message.msg,
+            ts: message.ts,
+          };
         }
       });
   },
